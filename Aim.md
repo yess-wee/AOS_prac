@@ -3,5 +3,7 @@
      1) child exits before parent (put wait(NULL) in parent process)
      3) parent exits before child (can either do nothing or can put wait(NULL) in child process)
   
-        op of 2: parent it , child's parent id --- same,
+        op of 2:
+                  1)parent it , child's parent id --- same,
                  parent's parent, child process id will be different.
+                  2) all will have different id.
