@@ -24,9 +24,7 @@ void* producer(void* arg) {
     
       pthread_mutex_lock(&mutex);
 
-      while (count == BUFFER_SIZE) {
-         pthread_cond_wait(&empty, &mutex);
-      }
+      while (count == BUFFER_SIZE);
 
       buffer[in] = item;
       printf("Produced: %d\n", item);
@@ -53,9 +51,7 @@ void* consumer(void* arg) {
   
       pthread_mutex_lock(&mutex);
 
-      while (count == 0) {
-         pthread_cond_wait(&full, &mutex);
-      }
+      while (count == 0) ;
 
       int item = buffer[out];
       printf("Consumed: %d\n", item);
@@ -92,7 +88,6 @@ int main() {
 
    return 0;
 }
-
 
 
 //output:
