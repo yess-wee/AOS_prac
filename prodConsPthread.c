@@ -11,9 +11,8 @@ int out = 0;
 int count = 0;
 
 
-pthread_mutex_t mutex;
-pthread_cond_t full;
-pthread_cond_t empty;
+pthread_mutex_t lock;
+
 
 void* producer(void* arg) {
    int item = 1;
@@ -22,7 +21,7 @@ void* producer(void* arg) {
         
         
     
-      pthread_mutex_lock(&mutex);
+      pthread_mutex_lock(&lock);
 
       while (count == BUFFER_SIZE);
 
@@ -33,8 +32,7 @@ void* producer(void* arg) {
 
       count++;
 
-      pthread_cond_signal(&full);
-      pthread_mutex_unlock(&mutex);
+      pthread_mutex_unlock(&lock);
       
       
     }
@@ -49,7 +47,7 @@ void* consumer(void* arg) {
         
     
   
-      pthread_mutex_lock(&mutex);
+      pthread_mutex_lock(&lock);
 
       while (count == 0) ;
 
@@ -59,8 +57,8 @@ void* consumer(void* arg) {
 
       count--;
 
-      pthread_cond_signal(&empty);
-      pthread_mutex_unlock(&mutex);
+      
+      pthread_mutex_unlock(&lock);
       
       
     }
@@ -72,9 +70,8 @@ void* consumer(void* arg) {
 int main() {
    pthread_t producerThread, consumerThread;
 
-   pthread_mutex_init(&mutex, NULL);
-   pthread_cond_init(&full, NULL);
-   pthread_cond_init(&empty, NULL);
+   pthread_mutex_init(&lock, NULL);
+ 
 
    pthread_create(&producerThread, NULL, producer, NULL);
    pthread_create(&consumerThread, NULL, consumer, NULL);
@@ -82,9 +79,8 @@ int main() {
    pthread_join(producerThread, NULL);
    pthread_join(consumerThread, NULL);
 
-   pthread_mutex_destroy(&mutex);
-   pthread_cond_destroy(&full);
-   pthread_cond_destroy(&empty);
+   pthread_mutex_destroy(&lock);
+ 
 
    return 0;
 }
